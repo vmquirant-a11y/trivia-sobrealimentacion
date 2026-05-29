@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia de Sobrealimentación IA</title>
+    <!-- Tailwind CSS para un diseño limpio y moderno -->
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- CABECERA -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-blue-500 tracking-wide uppercase">Engine Boost Quiz</h1>
+            <p class="text-gray-400 mt-2">Pon a prueba tu conocimiento sobre Turbos, Compresores y Sistemas de Sobrealimentación</p>
+        </header>
+
+        <!-- PANTALLA 1: REGISTRO -->
+        <div id="screen-register" class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4 text-center text-white">Registro de Participantes</h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2 text-gray-300">Nombre del Participante:</label>
+                <input type="text" id="player-name" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-blue-500 text-white" placeholder="Ej. Juan Pérez">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2 text-gray-300">Selecciona Dificultad:</label>
+                <select id="player-difficulty" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-blue-500 text-white">
+                    <option value="easy">Principiante (15 preguntas)</option>
+                    <option value="medium">Intermedio (15 preguntas)</option>
+                    <option value="hard">Experto (15 preguntas)</option>
+                </select>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="registerPlayer()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition cursor-pointer text-center">
+                    Iniciar Mi Turno
+                </button>
+                <button onclick="finishQuizAndShowReport()" id="btn-final-report" class="hidden flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded transition cursor-pointer text-center">
+                    Finalizar y Ver Informe Global
+                </button>
+            </div>
+            <div id="registered-list" class="mt-6 text-sm text-gray-400 hidden">
+                <p class="font-semibold text-gray-300">Participantes listos en el sistema:</p>
+                <ul id="list-names" class="list-disc pl-5 mt-2"></ul>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: JUEGO -->
+        <div id="screen-quiz" class="hidden bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-3">
+                <div>
+                    <span class="text-sm uppercase tracking-wider text-blue-400 font-bold" id="quiz-diff-label">Dificultad</span>
+                    <h3 class="text-xl font-bold text-white" id="quiz-player-label">Jugador: </h3>
+                </div>
+                <div class="text-right">
+                    <span class="text-sm text-gray-400">Progreso</span>
+                    <p class="text-lg font-bold text-yellow-500" id="quiz-progress">Pregunta 1 de 15</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <p id="quiz-question" class="text-xl font-semibold text-gray-100"></p>
+            </div>
+
+            <div id="quiz-options" class="space-y-3">
+                <!-- Aquí se inyectan los botones de respuesta dinámicamente -->
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: INFORME FINAL -->
+        <div id="screen-report" class="hidden bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+            <h2 class="text-3xl font-bold mb-6 text-center text-green-400">Informe de Interacción del Sistema</h2>
+            
+            <div id="report-content" class="space-y-6">
+                <!-- Aquí se inyecta el reporte de cada participante -->
+            </div>
+
+            <div class="mt-8 text-center border-t border-gray-700 pt-6">
+                <button onclick="restartApp()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded transition cursor-pointer">
+                    Reiniciar Aplicación Completa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE PREGUNTAS (15 por nivel, 4 opciones cada una)
+        const questionBank = {
+            easy: [
+                { q: "¿Cuál es el objetivo principal de la sobrealimentación en un motor?", o: ["Reducir el consumo de aceite", "Introducir más aire en los cilindros", "Enfriar el líquido refrigerante", "Aumentar el tamaño del cigüeñal"], a: 1 },
+                { q: "¿Qué componente utiliza los gases de escape para girar?", o: ["El compresor volumétrico", "El alternador", "El turbocompresor", "La bomba de agua"], a: 2 },
+                { q: "¿Qué función tiene el intercooler?", o: ["Enfriar el aire de admisión comprimido", "Calentar el combustible", "Enfriar los gases de escape", "Lubricar el eje del turbo"], a: 0 },
+                { q: "¿De dónde toma la energía un compresor mecánico (Roots o centrífugo)?", o: ["De los gases de escape", "Directamente del cigüeñal mediante correa", "De la batería del coche", "Del sistema de frenos"], a: 1 },
+                { q: "¿Qué elemento regula la presión máxima de escape que entra a la turbina?", o: ["La válvula Wastegate (descarga)", "El intercooler", "El medidor de masa de aire", "El cuerpo de aceleración"], a: 0 },
+                { q: "¿Qué sustancia lubrica principalmente el eje central de un turbocompresor convencional?", o: ["El líquido de frenos", "El propio combustible", "El aceite del motor", "Grasa de litio"], a: 2 },
+                { q: "El fenómeno de retraso en la respuesta del turbo se conoce comúnmente como:", o: ["Turbo-back", "Turbo lag", "Boost creep", "Blow-off"], a: 1 },
+                { q: "¿Qué ocurre con la densidad del aire cuando se comprime?", o: ["Disminuye", "Permanece igual", "Aumenta", "Se vuelve inflamable"], a: 2 },
+                { q: "¿Dónde se instala físicamente el intercooler?", o: ["Dentro del bloque del motor", "Entre el compresor y el colector de admisión", "En el tramo final del tubo de escape", "Debajo del tanque de combustible"], a: 1 },
+                { q: "¿Qué tipo de motor se beneficia más originalmente de la sobrealimentación a grandes altitudes?", o: ["Motores de aviación y automóviles", "Motores eléctricos", "Motores de dos tiempos de cortacésped", "Motores de vapor"], a: 0 },
+                { q: "¿Qué unidad mide comúnmente la presión de sobrealimentación?", o: ["Voltios o Amperios", "Grados Celsius", "Bar o PSI", "Kilómetros por hora"], a: 2 },
+                { q: "¿Qué significa que un motor sea atmosférico o de aspiración natural?", o: ["Que no tiene pistones", "Que no utiliza ningún sistema de sobrealimentación", "Que funciona solo con oxígeno puro", "Que está diseñado para el espacio exterior"], a: 1 },
+                { q: "¿Qué hélice se encuentra en el lado del escape de un turbo?", o: ["La hélice del compresor", "La hélice de la turbina", "El rotor Roots", "El ventilador del radiador"], a: 1 },
+                { q: "¿Qué hélice empuja el aire fresco hacia el motor?", o: ["La rueda del compresor", "La rueda de la turbina", "La válvula de alivio", "El árbol de levas"], a: 0 },
+                { q: "¿Por qué el aire caliente no es ideal para la combustión del motor?", o: ["Porque tiene menos oxígeno por unidad de volumen", "Porque daña las bujías instantáneamente", "Porque congela el combustible", "Porque reduce la presión del aceite"], a: 0 }
+            ],
+            medium: [
+                { q: "¿Qué función cumple la válvula de alivio conocida como 'Blow-Off'?", o: ["Liberar aire comprimido sobrante al soltar el acelerador", "Inyectar combustible extra en el escape", "Bloquear el paso de aceite", "Aumentar las revoluciones del ralentí"], a: 0 },
+                { q: "¿Cuál es la principal ventaja de un compresor volumétrico frente a un turbocompresor?", o: ["Mayor eficiencia térmica a altas RPM", "Respuesta inmediata sin retraso (sin lag)", "Usa la energía sobrante del escape", "No requiere lubricación"], a: 1 },
+                { q: "¿Qué diseño de turbo ayuda a reducir el lag variando la sección de entrada de los gases?", o: ["Turbo Twin-Scroll", "Turbo de geometría variable (VGT)", "Biturbo secuencial", "Turbo eléctrico puro"], a: 1 },
+                { q: "¿Qué significa el término 'Twin-Scroll'?", o: ["Un turbo con dos compresores mecánicos en serie", "Un caracol de turbina con dos entradas de gases independientes", "Un motor con dos turbos idénticos en paralelo", "Un intercooler de doble núcleo"], a: 1 },
+                { q: "¿Qué riesgo severo en el motor aumenta si la presión de sobrealimentación es excesiva sin ajustar el octanaje?", o: ["Detonación o picado de bielas (autoencendido)", "Rotura de la correa del alternador", "Pérdida de líquido lavaparabrisas", "Cortocircuito en los faros"], a: 0 },
+                { q: "¿Cómo se refrigera el cuerpo central de los turbos modernos de altas prestaciones además de con aceite?", o: ["Con aire acondicionado", "Con líquido refrigerante del propio motor", "Con una entrada de aire directa del exterior", "Con líquido de dirección asistida"], a: 1 },
