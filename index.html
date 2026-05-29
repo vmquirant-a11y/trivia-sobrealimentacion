@@ -4,81 +4,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivia de Sobrealimentación IA</title>
-    <!-- Tailwind CSS para un diseño limpio y moderno -->
-    <script src="https://jsdelivr.net"></script>
-</head>
-<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+    <style>
+        /* DISEÑO BASE ULTRA-COMPATIBLE */
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #3b82f6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #9ca3af;
+            margin: 0;
+            font-size: 1rem;
+        }
+        /* PANTALLAS */
+        .card {
+            background-color: #1f2937;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #374151;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .hidden {
+            display: none !important;
+        }
+        /* FORMULARIOS Y ELEMENTOS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d1d5db;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        /* BOTONES */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: white;
+        }
+        .btn-blue { background-color: #2563eb; }
+        .btn-blue:hover { background-color: #1d4ed8; }
+        .btn-green { background-color: #16a34a; }
+        .btn-green:hover { background-color: #15803d; }
+        
+        /* INTERFAZ DE JUEGO */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-b: 1px solid #374151;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .quiz-header h3 { margin: 5px 0 0 0; color: white; }
+        .diff-tag { color: #60a5fa; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
+        .progress-text { color: #f59e0b; font-weight: bold; font-size: 1.1rem; margin: 0; }
+        .question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px; }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-option {
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            text-align: left;
+            font-weight: normal;
+            color: #e5e7eb;
+        }
+        .btn-option:hover {
+            background-color: #4b5563;
+            color: white;
+        }
 
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- CABECERA -->
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-blue-500 tracking-wide uppercase">Engine Boost Quiz</h1>
-            <p class="text-gray-400 mt-2">Pon a prueba tu conocimiento sobre Turbos, Compresores y Sistemas de Sobrealimentación</p>
+        /* LISTA DE REGISTRADOS */
+        .registered-box {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #374151;
+        }
+        .registered-box p { color: #d1d5db; font-weight: bold; margin-bottom: 10px; }
+        ul { padding-left: 20px; margin: 0; color: #9ca3af; }
+        li { margin-bottom: 6px; }
+
+        /* REPORTE FINAL */
+        .report-title { color: #4ade80; text-align: center; margin-bottom: 25px; }
+        .participant-card {
+            background-color: #374151;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #4b5563;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #4b5563;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .card-header h3 { margin: 0; color: #60a5fa; }
+        .log-item {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            border-left: 5px solid;
+        }
+        .log-correct { background-color: rgba(22,163,74,0.15); border-left-color: #16a34a; }
+        .log-incorrect { background-color: rgba(220,38,38,0.15); border-left-color: #dc2626; }
+        .badge {
+            float: right;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .badge-ok { background-color: #14532d; color: #4ade80; }
+        .badge-no { background-color: #451a03; color: #f87171; }
+        .scroll-box { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Engine Boost Quiz</h1>
+            <p class="subtitle">Pon a prueba tu conocimiento sobre Turbos, Compresores y Sistemas de Sobrealimentación</p>
         </header>
 
         <!-- PANTALLA 1: REGISTRO -->
-        <div id="screen-register" class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-            <h2 class="text-2xl font-bold mb-4 text-center text-white">Registro de Participantes</h2>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-2 text-gray-300">Nombre del Participante:</label>
-                <input type="text" id="player-name" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-blue-500 text-white" placeholder="Ej. Juan Pérez">
+        <div id="screen-register" class="card">
+            <h2 style="text-align: center; margin-top: 0;">Registro de Participantes</h2>
+            
+            <div class="form-group">
+                <label for="player-name">Nombre del Participante:</label>
+                <input type="text" id="player-name" placeholder="Ej. Juan Pérez">
             </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium mb-2 text-gray-300">Selecciona Dificultad:</label>
-                <select id="player-difficulty" class="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:border-blue-500 text-white">
+            
+            <div class="form-group">
+                <label for="player-difficulty">Selecciona Dificultad:</label>
+                <select id="player-difficulty">
                     <option value="easy">Principiante (15 preguntas)</option>
                     <option value="medium">Intermedio (15 preguntas)</option>
                     <option value="hard">Experto (15 preguntas)</option>
                 </select>
             </div>
-            <div class="flex gap-4">
-                <button onclick="registerPlayer()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition cursor-pointer text-center">
-                    Iniciar Mi Turno
-                </button>
-                <button onclick="finishQuizAndShowReport()" id="btn-final-report" class="hidden flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded transition cursor-pointer text-center">
-                    Finalizar y Ver Informe Global
-                </button>
+            
+            <div class="btn-group">
+                <button onclick="registerPlayer()" class="btn-blue">Iniciar Mi Turno</button>
+                <button onclick="finishQuizAndShowReport()" id="btn-final-report" class="btn-green hidden">Finalizar y Ver Informe</button>
             </div>
-            <div id="registered-list" class="mt-6 text-sm text-gray-400 hidden">
-                <p class="font-semibold text-gray-300">Participantes listos en el sistema:</p>
-                <ul id="list-names" class="list-disc pl-5 mt-2"></ul>
+            
+            <div id="registered-list" class="registered-box hidden">
+                <p>Participantes listos en el sistema:</p>
+                <ul id="list-names"></ul>
             </div>
         </div>
 
         <!-- PANTALLA 2: JUEGO -->
-        <div id="screen-quiz" class="hidden bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-3">
+        <div id="screen-quiz" class="card hidden">
+            <div class="quiz-header">
                 <div>
-                    <span class="text-sm uppercase tracking-wider text-blue-400 font-bold" id="quiz-diff-label">Dificultad</span>
-                    <h3 class="text-xl font-bold text-white" id="quiz-player-label">Jugador: </h3>
+                    <span class="diff-tag" id="quiz-diff-label">Dificultad</span>
+                    <h3 id="quiz-player-label">Jugador: </h3>
                 </div>
-                <div class="text-right">
-                    <span class="text-sm text-gray-400">Progreso</span>
-                    <p class="text-lg font-bold text-yellow-500" id="quiz-progress">Pregunta 1 de 15</p>
+                <div style="text-align: right;">
+                    <span style="color: #9ca3af; font-size: 0.85rem;">Progreso</span>
+                    <p class="progress-text" id="quiz-progress">Pregunta 1 de 15</p>
                 </div>
             </div>
 
-            <div class="mb-6">
-                <p id="quiz-question" class="text-xl font-semibold text-gray-100"></p>
-            </div>
+            <p id="quiz-question" class="question-text"></p>
 
-            <div id="quiz-options" class="space-y-3">
-                <!-- Aquí se inyectan los botones de respuesta dinámicamente -->
+            <div id="quiz-options" class="options-list">
+                <!-- Botones inyectados dinámicamente -->
             </div>
         </div>
 
         <!-- PANTALLA 3: INFORME FINAL -->
-        <div id="screen-report" class="hidden bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-            <h2 class="text-3xl font-bold mb-6 text-center text-green-400">Informe de Interacción del Sistema</h2>
+        <div id="screen-report" class="card hidden">
+            <h2 class="report-title">Informe de Interacción del Sistema</h2>
             
-            <div id="report-content" class="space-y-6">
-                <!-- Aquí se inyecta el reporte de cada participante -->
+            <div id="report-content">
+                <!-- Reportes inyectados dinámicamente -->
             </div>
 
-            <div class="mt-8 text-center border-t border-gray-700 pt-6">
-                <button onclick="restartApp()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded transition cursor-pointer">
-                    Reiniciar Aplicación Completa
-                </button>
+            <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #374151;">
+                <button onclick="restartApp()" class="btn-blue" style="width: auto; padding: 12px 30px;">Reiniciar Todo</button>
             </div>
         </div>
     </div>
@@ -93,20 +253,3 @@
                 { q: "¿De dónde toma la energía un compresor mecánico (Roots o centrífugo)?", o: ["De los gases de escape", "Directamente del cigüeñal mediante correa", "De la batería del coche", "Del sistema de frenos"], a: 1 },
                 { q: "¿Qué elemento regula la presión máxima de escape que entra a la turbina?", o: ["La válvula Wastegate (descarga)", "El intercooler", "El medidor de masa de aire", "El cuerpo de aceleración"], a: 0 },
                 { q: "¿Qué sustancia lubrica principalmente el eje central de un turbocompresor convencional?", o: ["El líquido de frenos", "El propio combustible", "El aceite del motor", "Grasa de litio"], a: 2 },
-                { q: "El fenómeno de retraso en la respuesta del turbo se conoce comúnmente como:", o: ["Turbo-back", "Turbo lag", "Boost creep", "Blow-off"], a: 1 },
-                { q: "¿Qué ocurre con la densidad del aire cuando se comprime?", o: ["Disminuye", "Permanece igual", "Aumenta", "Se vuelve inflamable"], a: 2 },
-                { q: "¿Dónde se instala físicamente el intercooler?", o: ["Dentro del bloque del motor", "Entre el compresor y el colector de admisión", "En el tramo final del tubo de escape", "Debajo del tanque de combustible"], a: 1 },
-                { q: "¿Qué tipo de motor se beneficia más originalmente de la sobrealimentación a grandes altitudes?", o: ["Motores de aviación y automóviles", "Motores eléctricos", "Motores de dos tiempos de cortacésped", "Motores de vapor"], a: 0 },
-                { q: "¿Qué unidad mide comúnmente la presión de sobrealimentación?", o: ["Voltios o Amperios", "Grados Celsius", "Bar o PSI", "Kilómetros por hora"], a: 2 },
-                { q: "¿Qué significa que un motor sea atmosférico o de aspiración natural?", o: ["Que no tiene pistones", "Que no utiliza ningún sistema de sobrealimentación", "Que funciona solo con oxígeno puro", "Que está diseñado para el espacio exterior"], a: 1 },
-                { q: "¿Qué hélice se encuentra en el lado del escape de un turbo?", o: ["La hélice del compresor", "La hélice de la turbina", "El rotor Roots", "El ventilador del radiador"], a: 1 },
-                { q: "¿Qué hélice empuja el aire fresco hacia el motor?", o: ["La rueda del compresor", "La rueda de la turbina", "La válvula de alivio", "El árbol de levas"], a: 0 },
-                { q: "¿Por qué el aire caliente no es ideal para la combustión del motor?", o: ["Porque tiene menos oxígeno por unidad de volumen", "Porque daña las bujías instantáneamente", "Porque congeal el combustible", "Porque reduce la presión del aceite"], a: 0 }
-            ],
-            medium: [
-                { q: "¿Qué función cumple la válvula de alivio conocida como 'Blow-Off'?", o: ["Liberar aire comprimido sobrante al soltar el acelerador", "Inyectar combustible extra en el escape", "Bloquear el paso de aceite", "Aumentar las revoluciones del ralentí"], a: 0 },
-                { q: "¿Cuál es la principal ventaja de un compresor volumétrico frente a un turbocompresor?", o: ["Mayor eficiencia térmica a altas RPM", "Respuesta inmediata sin retraso (sin lag)", "Usa la energía sobrante del escape", "No requiere lubricación"], a: 1 },
-                { q: "¿Qué diseño de turbo ayuda a reducir el lag variando la sección de entrada de los gases?", o: ["Turbo Twin-Scroll", "Turbo de geometría variable (VGT)", "Biturbo secuencial", "Turbo eléctrico puro"], a: 1 },
-                { q: "¿Qué significa el término 'Twin-Scroll'?", o: ["Un turbo con dos compresores mecánicos en serie", "Un caracol de turbina con dos entradas de gases independientes", "Un motor con dos turbos idénticos en paralelo", "Un intercooler de doble núcleo"], a: 1 },
-                { q: "¿Qué riesgo severo en el motor aumenta si la presión de sobrealimentación es excesiva sin ajustar el octanaje?", o: ["Detonación o picado de bielas (autoencendido)", "Rotura de la correa del alternador", "Pérdida de líquido lavaparabrisas", "Cortocircuito en los faros"], a: 0 },
-                { q: "¿Cómo se refrigera el cuerpo central de los turbos modernos de altas prestaciones además de con aceite?", o: ["Con aire acondicionado", "Con líquido refrigerante del propio motor", "Con una entrada de aire directa del exterior", "Con líquido de dirección asistida"], a: 1 },
