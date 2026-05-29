@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trivia de Sobrealimentación IA</title>
+    <title>Trivia Sobrealimentacion</title>
     <style>
         body {
             background-color: #111827;
             color: #f3f4f6;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,7 +16,7 @@
         }
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
             margin-top: 20px;
         }
         header {
@@ -26,21 +26,13 @@
         h1 {
             color: #3b82f6;
             text-transform: uppercase;
-            letter-spacing: 1px;
             margin-bottom: 5px;
-            font-size: 2rem;
-        }
-        .subtitle {
-            color: #9ca3af;
-            margin: 0;
-            font-size: 1rem;
         }
         .card {
             background-color: #1f2937;
             padding: 25px;
             border-radius: 12px;
             border: 1px solid #374151;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .hidden {
             display: none !important;
@@ -52,7 +44,6 @@
             display: block;
             margin-bottom: 8px;
             color: #d1d5db;
-            font-weight: 500;
         }
         input, select {
             width: 100%;
@@ -66,7 +57,8 @@
         }
         .btn-group {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
         }
         button {
             width: 100%;
@@ -76,87 +68,45 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
             color: white;
         }
         .btn-blue { background-color: #2563eb; }
-        .btn-blue:hover { background-color: #1d4ed8; }
         .btn-green { background-color: #16a34a; }
-        .btn-green:hover { background-color: #15803d; }
         
         .quiz-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             border-bottom: 1px solid #374151;
-            padding-bottom: 15px;
+            padding-bottom: 11px;
             margin-bottom: 20px;
         }
-        .quiz-header h3 { margin: 5px 0 0 0; color: white; }
-        .diff-tag { color: #60a5fa; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
-        .progress-text { color: #f59e0b; font-weight: bold; font-size: 1.1rem; margin: 0; }
-        .question-text { font-size: 1.25rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px; }
+        .progress-text { color: #f59e0b; font-weight: bold; margin: 0; }
+        .question-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 25px; }
         
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
         .btn-option {
             background-color: #374151;
             border: 1px solid #4b5563;
             text-align: left;
-            font-weight: normal;
-            color: #e5e7eb;
+            margin-bottom: 10px;
         }
         .btn-option:hover {
             background-color: #4b5563;
-            color: white;
         }
-        .registered-box {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #374151;
-        }
-        .registered-box p { color: #d1d5db; font-weight: bold; margin-bottom: 10px; }
-        ul { padding-left: 20px; margin: 0; color: #9ca3af; }
-        li { margin-bottom: 6px; }
-        .report-title { color: #4ade80; text-align: center; margin-bottom: 25px; }
         .participant-card {
             background-color: #374151;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid #4b5563;
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #4b5563;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .card-header h3 { margin: 0; color: #60a5fa; }
         .log-item {
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 0.9rem;
-            border-left: 5px solid;
         }
-        .log-correct { background-color: rgba(22,163,74,0.15); border-left-color: #16a34a; }
-        .log-incorrect { background-color: rgba(220,38,38,0.15); border-left-color: #dc2626; }
-        .badge {
-            float: right;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .badge-ok { background-color: #14532d; color: #4ade80; }
-        .badge-no { background-color: #451a03; color: #f87171; }
-        .scroll-box { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .log-correct { background-color: rgba(22,163,74,0.2); }
+        .log-incorrect { background-color: rgba(220,38,38,0.2); }
     </style>
 </head>
 <body>
@@ -164,20 +114,20 @@
     <div class="container">
         <header>
             <h1>Engine Boost Quiz</h1>
-            <p class="subtitle">Pon a prueba tu conocimiento sobre Turbos, Compresores y Sistemas de Sobrealimentación</p>
+            <p style="color: #9ca3af;">Trivia de Turbos y Compresores</p>
         </header>
 
         <!-- PANTALLA 1: REGISTRO -->
         <div id="screen-register" class="card">
-            <h2 style="text-align: center; margin-top: 0;">Registro de Participantes</h2>
+            <h2 style="text-align: center; margin-top: 0;">Registro</h2>
             
             <div class="form-group">
-                <label for="player-name">Nombre del Participante:</label>
-                <input type="text" id="player-name" placeholder="Ej. Juan Pérez">
+                <label>Nombre del Participante:</label>
+                <input type="text" id="player-name" placeholder="Escribe tu nombre">
             </div>
             
             <div class="form-group">
-                <label for="player-difficulty">Selecciona Dificultad:</label>
+                <label>Selecciona Dificultad:</label>
                 <select id="player-difficulty">
                     <option value="easy">Principiante (15 preguntas)</option>
                     <option value="medium">Intermedio (15 preguntas)</option>
@@ -187,12 +137,7 @@
             
             <div class="btn-group">
                 <button type="button" id="btn-start" class="btn-blue">Iniciar Mi Turno</button>
-                <button type="button" id="btn-final-report" class="btn-green hidden">Finalizar y Ver Informe</button>
-            </div>
-            
-            <div id="registered-list" class="registered-box hidden">
-                <p>Participantes listos en el sistema:</p>
-                <ul id="list-names"></ul>
+                <button type="button" id="btn-final-report" class="btn-green hidden">Ver Informe Final</button>
             </div>
         </div>
 
@@ -200,42 +145,57 @@
         <div id="screen-quiz" class="card hidden">
             <div class="quiz-header">
                 <div>
-                    <span class="diff-tag" id="quiz-diff-label">Dificultad</span>
-                    <h3 id="quiz-player-label">Jugador: </h3>
+                    <h3 id="quiz-player-label" style="margin:0; color:white;">Jugador: </h3>
                 </div>
-                <div style="text-align: right;">
-                    <span style="color: #9ca3af; font-size: 0.85rem;">Progreso</span>
+                <div>
                     <p class="progress-text" id="quiz-progress">Pregunta 1 de 15</p>
                 </div>
             </div>
 
             <p id="quiz-question" class="question-text"></p>
-
-            <div id="quiz-options" class="options-list"></div>
+            <div id="quiz-options"></div>
         </div>
 
         <!-- PANTALLA 3: INFORME FINAL -->
         <div id="screen-report" class="card hidden">
-            <h2 class="report-title">Informe de Interacción del Sistema</h2>
-            
+            <h2 style="color: #4ade80; text-align: center;">Informe de Resultados</h2>
             <div id="report-content"></div>
-
-            <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #374151;">
-                <button type="button" id="btn-restart" class="btn-blue" style="width: auto; padding: 12px 30px;">Reiniciar Todo</button>
-            </div>
+            <button type="button" id="btn-restart" class="btn-blue" style="margin-top:20px;">Reiniciar Todo</button>
         </div>
     </div>
 
     <script>
         const questionBank = {
             easy: [
-                { q: "¿Cuál es el objetivo principal de la sobrealimentación en un motor?", o: ["Reducir el consumo de aceite", "Introducir más aire en los cilindros", "Enfriar el líquido refrigerante", "Aumentar el tamaño del cigüeñal"], a: 1 },
-                { q: "¿Qué componente utiliza los gases de escape para girar?", o: ["El compresor volumétrico", "El alternador", "El turbocompresor", "La bomba de agua"], a: 2 },
-                { q: "¿Qué función tiene el intercooler?", o: ["Enfriar el aire de admisión comprimido", "Calentar el combustible", "Enfriar los gases de escape", "Lubricar el eje del turbo"], a: 0 },
-                { q: "¿De dónde toma la energía un compresor mecánico?", o: ["De los gases de escape", "Directamente del cigüeñal mediante correa", "De la batería del coche", "Del sistema de frenos"], a: 1 },
-                { q: "¿Qué elemento regula la presión máxima de escape que entra a la turbina?", o: ["La válvula Wastegate (descarga)", "El intercooler", "El medidor de masa de aire", "El cuerpo de aceleración"], a: 0 },
-                { q: "¿Qué sustancia lubrica principalmente el eje central de un turbocompresor?", o: ["El líquido de frenos", "El propio combustible", "El aceite del motor", "Grasa de litio"], a: 2 },
-                { q: "El retraso en la respuesta del turbo se conoce como:", o: ["Turbo-back", "Turbo lag", "Boost creep", "Blow-off"], a: 1 },
-                { q: "¿Qué ocurre con la densidad del aire cuando se comprime?", o: ["Disminuye", "Permanece igual", "Aumenta", "Se vuelve inflamable"], a: 2 },
-                { q: "Dónde se instala físicamente el intercooler:", o: ["Dentro del bloque del motor", "Entre el compresor y el colector de admisión", "En el tramo final del tubo de escape", "Debajo del tanque"], a: 1 },
+                { q: "Cual es el objetivo principal de la sobrealimentacion?", o: ["Reducir consumo de aceite", "Introducir mas aire en cilindros", "Enfriar el refrigerante", "Aumentar el ciguenal"], a: 1 },
+                { q: "Que componente usa los gases de escape para girar?", o: ["Compresor volumetrico", "Alternador", "Turbocompresor", "Bomba de agua"], a: 2 },
+                { q: "Que funcion tiene el intercooler?", o: ["Enfriar el aire comprimido", "Calentar el combustible", "Enfriar gases de escape", "Lubricar el eje"], a: 0 },
+                { q: "De donde toma energia un compresor mecanico?", o: ["Gases de escape", "Del ciguenal por correa", "De la bateria", "Frenos"], a: 1 },
+                { q: "Que regula la presion maxima de escape en la turbina?", o: ["Valvula Wastegate", "Intercooler", "Sensor MAF", "Mariposa"], a: 0 },
+                { q: "Que sustancia lubrica el eje del turbocompresor?", o: ["Liquido de frenos", "Combustible", "Aceite del motor", "Grasa"], a: 2 },
+                { q: "El retraso en la respuesta del turbo se llama:", o: ["Turbo-back", "Turbo lag", "Boost creep", "Blow-off"], a: 1 },
+                { q: "Que ocurre con la densidad del aire al comprimirse?", o: ["Disminuye", "Sigue igual", "Aumenta", "Desaparece"], a: 2 },
+                { q: "Donde se instala el intercooler?", o: ["En el bloque", "Entre compresor y admision", "Al final del escape", "En el tanque"], a: 1 },
+                { q: "Que motor se diseño originalmente para sobrealimentacion en altura?", o: ["Aviacion", "Electricos", "Dos tiempos", "Vapor"], a: 0 },
+                { q: "Que unidad mide la presion de sobrealimentacion?", o: ["Voltios", "Celsius", "Bar o PSI", "Km/h"], a: 2 },
+                { q: "Que es un motor atmosferico?", o: ["Sin pistones", "Sin sobrealimentacion", "Usa oxigeno puro", "Del espacio"], a: 1 },
+                { q: "Que helice esta en el lado del escape del turbo?", o: ["Compresor", "Turbina", "Rotor", "Ventilador"], a: 1 },
+                { q: "Que helice empuja el aire fresco al motor?", o: ["Compresor", "Turbina", "Valvula", "Arbol levas"], a: 0 },
+                { q: "Por que el aire caliente no es ideal para el motor?", o: ["Tiene menos oxigeno por volumen", "Daña bujias", "Congela gasolina", "Baja la presion"], a: 0 }
+            ],
+            medium: [
+                { q: "Que funcion cumple la valvula Blow-Off?", o: ["Liberar aire al soltar acelerador", "Inyectar gasolina", "Bloquear aceite", "Subir ralenti"], a: 0 },
+                { q: "Ventaja del compresor mecanico frente al turbo:", o: ["Mas eficiencia", "Respuesta inmediata sin lag", "Usa el escape", "No usa aceite"], a: 1 },
+                { q: "Que turbo reduce el lag variando la entrada de gases?", o: ["Twin-Scroll", "Geometria variable VGT", "Biturbo", "Electrico"], a: 1 },
+                { q: "Que significa Twin-Scroll?", o: ["Dos compresores", "Caracol con dos entradas independientes", "Dos turbos iguales", "Intercooler doble"], a: 1 },
+                { q: "Riesgo en el motor si la presion es excesiva sin octanaje:", o: ["Detonacion o picado", "Rotura de correa", "Perdida de agua", "Cortocircuito"], a: 0 },
+                { q: "Como se refrigera el centro del turbo ademas de con aceite?", o: ["Aire acondicionado", "Refrigerante del motor", "Entrada directa", "Liquido direccion"], a: 1 },
+                { q: "En un sistema Biturbo Secuencial:", o: ["Uno a bajas RPM y otro a altas", "Ambos a la vez siempre", "Uno por bancada", "Uno electrico"], a: 0 },
+                { q: "Que compresor usa dos rotores en forma de ocho?", o: ["Centrifugo", "Roots", "Tornillo", "Turbo"], a: 1 },
+                { q: "Por que los VGT son raros en motores de gasolina?", o: ["Bajas RPM", "Altas temperaturas de escape", "No usan aceite", "Disuelve alabes"], a: 1 },
+                { q: "Que conecta la turbina con el compresor?", o: ["Embrague", "Eje central", "Correa", "Engranajes"], a: 1 },
+                { q: "Que mide el sensor MAP?", o: ["Pedal freno", "Presion en admision", "Temperatura carte", "Flujo aire"], a: 1 },
+                { q: "El termino Boost Creep es:", o: ["Subida incontrolada de presion", "Perdida de presion", "Silbido", "Retraso encendido"], a: 0 },
+                { q: "Funcion del Turbo Timer:", o: ["Medir tiempo", "Enfriar el aceite manteniendo ralenti", "Apagar turbo", "Ajustar presion"], a: 1 },
+                { q: "Ventaja del compresor de tornillo sobre el Roots:", o: ["Mas barato", "Comprime interno mas eficiente", "Usa escape", "No da calor"], a: 1 },
 
