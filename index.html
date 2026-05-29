@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivia de Sobrealimentación IA</title>
     <style>
-        /* DISEÑO BASE ULTRA-COMPATIBLE */
         body {
             background-color: #111827;
             color: #f3f4f6;
@@ -36,7 +35,6 @@
             margin: 0;
             font-size: 1rem;
         }
-        /* PANTALLAS */
         .card {
             background-color: #1f2937;
             padding: 25px;
@@ -47,7 +45,6 @@
         .hidden {
             display: none !important;
         }
-        /* FORMULARIOS Y ELEMENTOS */
         .form-group {
             margin-bottom: 20px;
         }
@@ -67,11 +64,6 @@
             font-size: 1rem;
             box-sizing: border-box;
         }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-        /* BOTONES */
         .btn-group {
             display: flex;
             gap: 15px;
@@ -92,12 +84,11 @@
         .btn-green { background-color: #16a34a; }
         .btn-green:hover { background-color: #15803d; }
         
-        /* INTERFAZ DE JUEGO */
         .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-b: 1px solid #374151;
+            border-bottom: 1px solid #374151;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -122,8 +113,6 @@
             background-color: #4b5563;
             color: white;
         }
-
-        /* LISTA DE REGISTRADOS */
         .registered-box {
             margin-top: 25px;
             padding-top: 20px;
@@ -132,8 +121,6 @@
         .registered-box p { color: #d1d5db; font-weight: bold; margin-bottom: 10px; }
         ul { padding-left: 20px; margin: 0; color: #9ca3af; }
         li { margin-bottom: 6px; }
-
-        /* REPORTE FINAL */
         .report-title { color: #4ade80; text-align: center; margin-bottom: 25px; }
         .participant-card {
             background-color: #374151;
@@ -199,8 +186,8 @@
             </div>
             
             <div class="btn-group">
-                <button onclick="registerPlayer()" class="btn-blue">Iniciar Mi Turno</button>
-                <button onclick="finishQuizAndShowReport()" id="btn-final-report" class="btn-green hidden">Finalizar y Ver Informe</button>
+                <button type="button" id="btn-start" class="btn-blue">Iniciar Mi Turno</button>
+                <button type="button" id="btn-final-report" class="btn-green hidden">Finalizar y Ver Informe</button>
             </div>
             
             <div id="registered-list" class="registered-box hidden">
@@ -224,32 +211,31 @@
 
             <p id="quiz-question" class="question-text"></p>
 
-            <div id="quiz-options" class="options-list">
-                <!-- Botones inyectados dinámicamente -->
-            </div>
+            <div id="quiz-options" class="options-list"></div>
         </div>
 
         <!-- PANTALLA 3: INFORME FINAL -->
         <div id="screen-report" class="card hidden">
             <h2 class="report-title">Informe de Interacción del Sistema</h2>
             
-            <div id="report-content">
-                <!-- Reportes inyectados dinámicamente -->
-            </div>
+            <div id="report-content"></div>
 
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #374151;">
-                <button onclick="restartApp()" class="btn-blue" style="width: auto; padding: 12px 30px;">Reiniciar Todo</button>
+                <button type="button" id="btn-restart" class="btn-blue" style="width: auto; padding: 12px 30px;">Reiniciar Todo</button>
             </div>
         </div>
     </div>
 
     <script>
-        // BANCO DE PREGUNTAS (15 por nivel, 4 opciones cada una)
         const questionBank = {
             easy: [
                 { q: "¿Cuál es el objetivo principal de la sobrealimentación en un motor?", o: ["Reducir el consumo de aceite", "Introducir más aire en los cilindros", "Enfriar el líquido refrigerante", "Aumentar el tamaño del cigüeñal"], a: 1 },
                 { q: "¿Qué componente utiliza los gases de escape para girar?", o: ["El compresor volumétrico", "El alternador", "El turbocompresor", "La bomba de agua"], a: 2 },
                 { q: "¿Qué función tiene el intercooler?", o: ["Enfriar el aire de admisión comprimido", "Calentar el combustible", "Enfriar los gases de escape", "Lubricar el eje del turbo"], a: 0 },
-                { q: "¿De dónde toma la energía un compresor mecánico (Roots o centrífugo)?", o: ["De los gases de escape", "Directamente del cigüeñal mediante correa", "De la batería del coche", "Del sistema de frenos"], a: 1 },
+                { q: "¿De dónde toma la energía un compresor mecánico?", o: ["De los gases de escape", "Directamente del cigüeñal mediante correa", "De la batería del coche", "Del sistema de frenos"], a: 1 },
                 { q: "¿Qué elemento regula la presión máxima de escape que entra a la turbina?", o: ["La válvula Wastegate (descarga)", "El intercooler", "El medidor de masa de aire", "El cuerpo de aceleración"], a: 0 },
-                { q: "¿Qué sustancia lubrica principalmente el eje central de un turbocompresor convencional?", o: ["El líquido de frenos", "El propio combustible", "El aceite del motor", "Grasa de litio"], a: 2 },
+                { q: "¿Qué sustancia lubrica principalmente el eje central de un turbocompresor?", o: ["El líquido de frenos", "El propio combustible", "El aceite del motor", "Grasa de litio"], a: 2 },
+                { q: "El retraso en la respuesta del turbo se conoce como:", o: ["Turbo-back", "Turbo lag", "Boost creep", "Blow-off"], a: 1 },
+                { q: "¿Qué ocurre con la densidad del aire cuando se comprime?", o: ["Disminuye", "Permanece igual", "Aumenta", "Se vuelve inflamable"], a: 2 },
+                { q: "Dónde se instala físicamente el intercooler:", o: ["Dentro del bloque del motor", "Entre el compresor y el colector de admisión", "En el tramo final del tubo de escape", "Debajo del tanque"], a: 1 },
+
